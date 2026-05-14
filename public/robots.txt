@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kaliyapafarmstead.com/sitemap.xml
+
+# Disallow admin areas
+Disallow: /admin/
+Disallow: /api/
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1

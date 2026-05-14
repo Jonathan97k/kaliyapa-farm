@@ -1,0 +1,117 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Connection Test diagnostic path
+    match /test/connection {
+      allow read: if true;
+    }
+
+    // Phase 3: Primitive Definition
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isEmailVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isAdmin() {
+      // For this project, we explicitly allow the user who requested the portal
+      // Note: In production, you should use a collection of admins
+      return isEmailVerified() && (
+        request.auth.token.email == "jkaphiri@tingathe.org" || 
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // 1. Services
+    match /services/{serviceId} {
+      allow read: if true;
+      allow write: if isAdmin();
+      
+      function isValidService(data) {
+        return data.title is string && data.title.size() <= 100 &&
+               data.description is string && data.description.size() <= 1000 &&
+               data.image is string && data.image.size() <= 500 &&
+               data.features is list && data.features.size() <= 20;
+      }
+      
+      allow create: if isAdmin() && isValidService(incoming()) && 
+                    incoming().keys().hasAll(['title', 'description', 'image', 'features']) &&
+                    incoming().keys().size() >= 4;
+                    
+      allow update: if isAdmin() && isValidService(incoming());
+      allow delete: if isAdmin();
+    }
+
+    // 2. Testimonials
+    match /testimonials/{testimonialId} {
+      allow read: if true;
+      allow write: if isAdmin();
+      
+      function isValidTestimonial(data) {
+        return data.name is string && data.name.size() <= 100 &&
+               data.text is string && data.text.size() <= 1000;
+      }
+
+      allow create: if isAdmin() && isValidTestimonial(incoming());
+      allow update: if isAdmin() && isValidTestimonial(incoming());
+      allow delete: if isAdmin();
+    }
+
+    // 3. Gallery
+    match /gallery/{imageId} {
+      allow read: if true;
+      allow write: if isAdmin();
+      
+      function isValidGallery(data) {
+        return data.url is string && data.url.size() <= 500 &&
+               data.category is string && data.category.size() <= 50 &&
+               data.title is string && data.title.size() <= 100;
+      }
+
+      allow create: if isAdmin() && isValidGallery(incoming());
+      allow update: if isAdmin() && isValidGallery(incoming());
+      allow delete: if isAdmin();
+    }
+
+    // 4. Inquiries (Contact Form)
+    match /inquiries/{inquiryId} {
+      allow create: if true; // Open to public
+      allow read, delete: if isAdmin();
+      allow update: if false; // Inquiries are immutable
+
+      function isValidInquiry(data) {
+        return data.name is string && data.name.size() <= 100 &&
+               data.email is string && data.email.size() <= 100 &&
+               data.message is string && data.message.size() <= 5000 &&
+               data.createdAt == request.time;
+      }
+      
+      allow create: if isValidInquiry(incoming());
+    }
+
+    // 5. Admins Collection
+    match /admins/{adminId} {
+      allow read: if isAdmin();
+      allow write: if false; // Only manageable via Firebase Console or special script
+    }
+  }
+}

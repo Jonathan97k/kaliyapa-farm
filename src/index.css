@@ -1,0 +1,171 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #1a472a;
+  --color-secondary: #c9a227;
+  --color-accent: #8b6914;
+  --color-cream: #faf8f5;
+  --color-charcoal: #1a1a1a;
+  --color-sage: #7d9a6f;
+  --color-sand: #e8dfd4;
+
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", serif;
+}
+
+@layer base {
+  body {
+    @apply bg-cream text-charcoal font-sans antialiased selection:bg-secondary/20;
+    scroll-behavior: smooth;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif tracking-tight;
+  }
+
+  /* Skip to content for accessibility */
+  .skip-link {
+    @apply absolute -top-10 left-4 bg-primary text-white px-4 py-2 rounded-lg z-50 transition-all duration-300;
+  }
+  .skip-link:focus {
+    @apply top-4;
+  }
+}
+
+/* Custom UI Components */
+.glass-nav {
+  @apply bg-cream/80 backdrop-blur-2xl border-b border-primary/10 shadow-sm;
+}
+
+.premium-card {
+  @apply bg-white/60 backdrop-blur-md rounded-3xl overflow-hidden transition-all duration-500
+         border border-primary/8 shadow-[0_4px_20px_rgba(0,0,0,0.04)]
+         hover:shadow-[0_12px_40px_rgba(26,71,42,0.12)] hover:-translate-y-1;
+}
+
+/* Eyebrow / section label */
+.section-label {
+  @apply inline-flex items-center gap-3 text-secondary text-[11px] font-bold tracking-[0.4em] uppercase;
+}
+.section-label::before {
+  content: '';
+  @apply h-px w-8 bg-secondary;
+}
+
+/* Gold underline accent */
+.gold-underline {
+  background-image: linear-gradient(transparent calc(100% - 4px), var(--color-secondary) 4px);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  display: inline;
+}
+
+/* Premium badge */
+.premium-badge {
+  @apply inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary/10
+         border border-secondary/20 text-secondary text-[10px] font-bold tracking-[0.2em] uppercase;
+}
+
+/* Number stat */
+.stat-number {
+  @apply text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-secondary leading-none;
+  font-feature-settings: "tnum";
+}
+.stat-label {
+  @apply text-[10px] font-bold tracking-[0.3em] uppercase opacity-50 mt-3;
+}
+
+/* Decorative divider */
+.divider-ornament {
+  @apply flex items-center gap-4 text-secondary/40;
+}
+.divider-ornament::before,
+.divider-ornament::after {
+  content: '';
+  @apply h-px flex-1 bg-current;
+}
+
+.text-reveal {
+  @apply bg-clip-text text-transparent bg-gradient-to-b from-primary to-primary/50;
+}
+
+.btn-premium {
+  @apply px-8 py-3.5 bg-primary text-white rounded-full font-medium overflow-hidden relative
+         transition-all duration-300 hover:shadow-[0_8px_30px_rgba(26,71,42,0.35)] hover:scale-105
+         active:scale-95;
+}
+
+.btn-premium-outline {
+  @apply px-8 py-3.5 border-2 border-primary/15 text-primary rounded-full font-medium
+         transition-all duration-300 hover:bg-primary hover:text-white hover:border-primary;
+}
+
+/* Texture & Special Effects */
+.grain-overlay {
+  background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+  filter: contrast(120%) brightness(100%);
+  @apply fixed inset-0 opacity-[0.03] pointer-events-none z-[100];
+}
+
+.bento-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6;
+}
+
+/* Smooth Swiper/Gallery styling */
+.img-zoom {
+  @apply transition-transform duration-[1.5s] ease-out hover:scale-110;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-cream;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary/10 rounded-full hover:bg-primary/30 transition-colors;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* WhatsApp Float Button */
+.whatsapp-float {
+  @apply fixed bottom-6 right-6 z-50 bg-[#25D366] text-white p-3.5 rounded-full shadow-xl
+         hover:scale-110 transition-all duration-300 hover:shadow-[0_0_25px_rgba(37,211,102,0.4)];
+  animation: pulse-whatsapp 2s infinite;
+}
+
+@keyframes pulse-whatsapp {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); }
+  50% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+}
+
+/* Skeleton Loading */
+.skeleton {
+  @apply bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 bg-[length:200%_100%] animate-[shimmer_1.5s_infinite];
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Fade In Animation */
+.fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
