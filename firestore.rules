@@ -6,10 +6,6 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
-    // Connection Test diagnostic path
-    match /test/connection {
-      allow read: if true;
-    }
 
     // Phase 3: Primitive Definition
     function isSignedIn() {
@@ -21,12 +17,8 @@ service cloud.firestore {
     }
 
     function isAdmin() {
-      // For this project, we explicitly allow the user who requested the portal
-      // Note: In production, you should use a collection of admins
-      return isEmailVerified() && (
-        request.auth.token.email == "jkaphiri@tingathe.org" || 
-        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
-      );
+      return isEmailVerified() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
     function isValidId(id) {
@@ -83,6 +75,7 @@ service cloud.firestore {
       
       function isValidGallery(data) {
         return data.url is string && data.url.size() <= 500 &&
+               data.url.matches('^https://firebasestorage\.googleapis\.com/.*') &&
                data.category is string && data.category.size() <= 50 &&
                data.title is string && data.title.size() <= 100;
       }
@@ -94,7 +87,6 @@ service cloud.firestore {
 
     // 4. Inquiries (Contact Form)
     match /inquiries/{inquiryId} {
-      allow create: if true; // Open to public
       allow read, delete: if isAdmin();
       allow update: if false; // Inquiries are immutable
 

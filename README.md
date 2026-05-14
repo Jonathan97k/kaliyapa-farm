@@ -61,6 +61,38 @@ npm run build
 npm run preview
 ```
 
+## Admin Setup
+
+Admin access is managed through Firebase Firestore. To grant admin privileges to a user:
+
+### Step 1: Get the User's UID
+
+1. Have the user sign in through the application's authentication system
+2. Go to Firebase Console → Authentication → Users tab
+3. Find the user and copy their UID (User ID)
+
+### Step 2: Add User to Admins Collection
+
+1. Go to Firebase Console → Firestore Database
+2. Navigate to the `admins` collection
+3. Create a new document with the user's UID as the document ID
+4. No additional fields are required - the document ID alone grants admin access
+
+### Security Note
+
+Admin access is now managed entirely through the Firestore `admins` collection. This approach:
+- Eliminates hardcoded admin emails from the codebase
+- Allows adding/removing admins without code changes
+- Supports multiple admins
+- Keeps sensitive information out of public repositories
+
+### Firestore Rules
+
+The `isAdmin()` function in `firestore.rules` checks:
+- User is signed in
+- Email is verified
+- User's UID exists in the `admins` collection
+
 ## Project Structure
 
 ```
