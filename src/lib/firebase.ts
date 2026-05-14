@@ -11,13 +11,16 @@ try {
   app = getApps().length > 0 ? getApps()[0] : initializeApp(firebaseConfig);
   db = initializeFirestore(app, {
     experimentalForceLongPolling: true,
+    databaseId: firebaseConfig.firestoreDatabaseId,
   });
   auth = getAuth(app);
 } catch (error) {
   console.error("Firebase initialization error:", error);
   // Create dummy exports so the app can still render
   app = initializeApp(firebaseConfig);
-  db = initializeFirestore(app, {});
+  db = initializeFirestore(app, {
+    databaseId: firebaseConfig.firestoreDatabaseId,
+  });
   auth = getAuth(app);
 }
 
