@@ -1,44 +1,41 @@
 import { useState, useEffect } from 'react';
-import { collection, query, onSnapshot, doc, deleteDoc, orderBy } from 'firebase/firestore';
-import { db, handleFirestoreError, OperationType } from '../../lib/firebase';
+import { fetchInquiries, deleteInquiry, type Inquiry } from '../../lib/api';
 import { motion, AnimatePresence } from 'motion/react';
-import { Trash2, Inbox, Mail, Phone, Calendar, User, MessageSquare, Loader2 } from 'lucide-react';
-
-interface Inquiry {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  interest: string;
-  message: string;
-  createdAt: any;
-}
+import { Trash2, Inbox, Mail, Phone, User, Loader2 } from 'lucide-react';
 
 export default function AdminInquiries() {
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const q = query(collection(db, 'inquiries'), orderBy('createdAt', 'desc'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const docs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Inquiry));
-      setInquiries(docs);
-      setLoading(false);
-    }, (error) => {
-      handleFirestoreError(error, OperationType.LIST, 'inquiries');
-    });
-
-    return () => unsubscribe();
+    loadInquiries();
   }, []);
+
+  async function loadInquiries() {
+    try {
+      const data = await fetchInquiries();
+      setInquiries(data);
+    } catch (error) {
+      console.error('Failed to load inquiries:', error);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const handleDelete = async (id: string) => {
     if (!window.confirm('Delete this inquiry?')) return;
     try {
-      await deleteDoc(doc(db, 'inquiries', id));
+      await deleteInquiry(id);
+      await loadInquiries();
     } catch (error) {
-      handleFirestoreError(error, OperationType.DELETE, 'inquiries');
+      alert(error instanceof Error ? error.message : 'Delete failed');
     }
   };
+
+  function formatDate(dateStr: string): string {
+    const date = new Date(dateStr + 'Z');
+    return date.toLocaleDateString() + ' at ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
 
   if (loading) {
     return (
@@ -82,11 +79,13 @@ export default function AdminInquiries() {
                     <a href={`mailto:${inquiry.email}`} className="flex items-center gap-3 text-sm text-primary/60 hover:text-secondary transition-colors">
                       <Mail size={14} /> {inquiry.email}
                     </a>
-                    <a href={`tel:${inquiry.phone}`} className="flex items-center gap-3 text-sm text-primary/60 hover:text-secondary transition-colors">
-                      <Phone size={14} /> {inquiry.phone}
-                    </a>
+                    {inquiry.phone && (
+                      <a href={`tel:${inquiry.phone}`} className="flex items-center gap-3 text-sm text-primary/60 hover:text-secondary transition-colors">
+                        <Phone size={14} /> {inquiry.phone}
+                      </a>
+                    )}
                     <div className="flex items-center gap-3 text-sm text-primary/30">
-                      <Calendar size={14} /> {inquiry.createdAt?.toDate().toLocaleDateString()} at {inquiry.createdAt?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      {formatDate(inquiry.created_at)}
                     </div>
                   </div>
                 </div>
@@ -105,7 +104,7 @@ export default function AdminInquiries() {
                 </div>
 
                 <div className="lg:col-span-2 flex items-center justify-end">
-                  <button 
+                  <button
                     onClick={() => handleDelete(inquiry.id)}
                     className="p-4 rounded-2xl bg-red-50 text-red-500 opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white"
                   >

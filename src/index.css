@@ -35,13 +35,17 @@
 
 /* Custom UI Components */
 .glass-nav {
-  @apply bg-cream/80 backdrop-blur-2xl border-b border-primary/10 shadow-sm;
+  @apply bg-cream/80 border-b border-primary/10 shadow-sm;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 .premium-card {
-  @apply bg-white/60 backdrop-blur-md rounded-3xl overflow-hidden transition-all duration-500
+  @apply bg-white/60 rounded-3xl overflow-hidden transition-all duration-500
          border border-primary/8 shadow-[0_4px_20px_rgba(0,0,0,0.04)]
          hover:shadow-[0_12px_40px_rgba(26,71,42,0.12)] hover:-translate-y-1;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 /* Eyebrow / section label */
@@ -91,14 +95,14 @@
 }
 
 .btn-premium {
-  @apply px-8 py-3.5 bg-primary text-white rounded-full font-medium overflow-hidden relative
+  @apply px-6 sm:px-8 py-3 sm:py-3.5 bg-primary text-white rounded-full font-medium overflow-hidden relative
          transition-all duration-300 hover:shadow-[0_8px_30px_rgba(26,71,42,0.35)] hover:scale-105
-         active:scale-95;
+         active:scale-95 min-h-[44px] sm:min-h-auto;
 }
 
 .btn-premium-outline {
-  @apply px-8 py-3.5 border-2 border-primary/15 text-primary rounded-full font-medium
-         transition-all duration-300 hover:bg-primary hover:text-white hover:border-primary;
+  @apply px-6 sm:px-8 py-3 sm:py-3.5 border-2 border-primary/15 text-primary rounded-full font-medium
+         transition-all duration-300 hover:bg-primary hover:text-white hover:border-primary min-h-[44px] sm:min-h-auto;
 }
 
 /* Texture & Special Effects */
@@ -141,8 +145,20 @@
 /* WhatsApp Float Button */
 .whatsapp-float {
   @apply fixed bottom-6 right-6 z-50 bg-[#25D366] text-white p-3.5 rounded-full shadow-xl
-         hover:scale-110 transition-all duration-300 hover:shadow-[0_0_25px_rgba(37,211,102,0.4)];
+         hover:scale-110 transition-all duration-300;
+  -webkit-animation: pulse-whatsapp 2s infinite;
   animation: pulse-whatsapp 2s infinite;
+}
+
+@-webkit-keyframes pulse-whatsapp {
+  0%, 100% {
+    -webkit-box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4);
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4);
+  }
+  50% {
+    -webkit-box-shadow: 0 0 0 15px rgba(37, 211, 102, 0);
+    box-shadow: 0 0 0 15px rgba(37, 211, 102, 0);
+  }
 }
 
 @keyframes pulse-whatsapp {
@@ -152,7 +168,14 @@
 
 /* Skeleton Loading */
 .skeleton {
-  @apply bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 bg-[length:200%_100%] animate-[shimmer_1.5s_infinite];
+  @apply bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 bg-[length:200%_100%];
+  -webkit-animation: shimmer 1.5s infinite;
+  animation: shimmer 1.5s infinite;
+}
+
+@-webkit-keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 @keyframes shimmer {
@@ -162,10 +185,72 @@
 
 /* Fade In Animation */
 .fade-in {
+  -webkit-animation: fadeIn 0.6s ease-out forwards;
   animation: fadeIn 0.6s ease-out forwards;
+}
+
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0;
+    -webkit-transform: translateY(20px);
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile Responsive Adjustments */
+@media screen and (max-width: 640px) {
+  /* Ensure text is readable on mobile */
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Prevent horizontal overflow */
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Mobile-safe WhatsApp button positioning */
+  .whatsapp-float {
+    bottom: 1.5rem;
+    right: 1rem;
+    width: 56px;
+    height: 56px;
+    padding: 0.875rem;
+  }
+
+  /* Ensure proper touch targets on mobile nav */
+  nav button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Gallery filter buttons on mobile */
+  .gallery-filter-btn {
+    padding: 0.625rem 1rem;
+    min-height: 44px;
+  }
+}
+
+/* Tablet adjustments */
+@media screen and (min-width: 641px) and (max-width: 1024px) {
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Large tablet to small desktop */
+@media screen and (min-width: 1025px) and (max-width: 1280px) {
+  .bento-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }

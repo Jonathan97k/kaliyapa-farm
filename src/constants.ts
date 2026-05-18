@@ -1,6 +1,7 @@
 export const FARM_NAME = "Kaliyapa Farmstead";
 export const MOTTO = "Fulfilled Aspirations";
 export const CONTACT_PHONE = "+265 993 02 70 68";
+export const CONTACT_EMAIL = "lysonkaliyapa@gmail.com";
 export const LOCATION = "Lifidzi, Salima, Malawi (15km from Kamuzu Road)";
 
 export const HERO_IMAGES = [
@@ -13,6 +14,11 @@ export const SERVICES = [
     title: "Goat Farming",
     description: "Premium Boer goats and quality meat production using world-class breeding standards. Our goats are raised with meticulous care for optimal health and superior meat quality.",
     image: "https://images.unsplash.com/photo-1524024973431-2ad916746881?auto=format&fit=crop&q=80&w=1200",
+    images: [
+      "https://images.unsplash.com/photo-1524024973431-2ad916746881?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1625245859953-7e9c55e8ee22?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1544474676-9041bed8f615?auto=format&fit=crop&q=80&w=1200"
+    ],
     features: ["Boer Breeding", "Quality Meat", "Healthy Livestock", "Premium Genetics"]
   },
   {
@@ -20,6 +26,11 @@ export const SERVICES = [
     title: "Poultry Farming",
     description: "Premium chicken and egg production with world-class breeding standards. Our poultry is raised with meticulous care for optimal health and superior meat quality.",
     image: "https://images.pexels.com/photos/1300355/pexels-photo-1300355.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    images: [
+      "https://images.pexels.com/photos/1300355/pexels-photo-1300355.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "https://images.unsplash.com/photo-1592684465788-bc44c57e5a7c?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1530519729491-acf5092a60ff?auto=format&fit=crop&q=80&w=1200"
+    ],
     features: ["Quality Meat", "Fresh Eggs", "Healthy Livestock", "Premium Genetics"]
   },
   {
@@ -27,13 +38,22 @@ export const SERVICES = [
     title: "Piggery Farming",
     description: "Premium pig farming and quality meat production using world-class breeding standards. Our pigs are raised with meticulous care for optimal health and superior meat quality.",
     image: "https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&q=80&w=1200",
+    images: [
+      "https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1548550023-2940bc276326?auto=format&fit=crop&q=80&w=1200"
+    ],
     features: ["Quality Meat", "Healthy Livestock", "Premium Genetics", "Ethical Rearing"]
   },
   {
     id: "crop-farming",
     title: "Crop Farming",
     description: "Sustainable crop production specializing in maize, sweet potatoes and other staples. We employ modern agricultural techniques to deliver high-quality, nutritious harvests.",
-    image: "https://images.pexels.com/photos/8105066/pexels-photo-8105066.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    image: "https://images.unsplash.com/photo-1574943320219-553eb213f72d?auto=format&fit=crop&q=80&w=1200",
+    images: [
+      "https://images.unsplash.com/photo-1574943320219-553eb213f72d?auto=format&fit=crop&q=80&w=1200",
+      "https://images.pexels.com/photos/8105066/pexels-photo-8105066.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "https://images.pexels.com/photos/4750274/pexels-photo-4750274.jpeg?auto=compress&cs=tinysrgb&w=1200"
+    ],
     features: ["Maize", "Sweet Potatoes", "Sustainable Farming", "Organic Practices"]
   }
 ];
@@ -139,7 +159,7 @@ export const ABOUT_IMAGES = {
     {
       name: "Lyson Kaliyapa",
       role: "Founder & CEO",
-      image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=400",
+      image: "/CEO.png",
       description: "Leading with vision and expertise since 2008"
     }
   ]

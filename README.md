@@ -20,7 +20,9 @@ Kaliyapa Farmstead is a premier agricultural establishment redefining livestock 
 - **Styling**: Tailwind CSS v4
 - **Animations**: Motion (Framer Motion)
 - **Routing**: React Router v7
-- **Backend**: Firebase (Firestore + Auth)
+- **Database**: Turso (libSQL)
+- **API**: Vercel Serverless Functions (Edge Runtime)
+- **Auth**: JWT with bcrypt password hashing
 - **Icons**: Lucide React
 
 ## Getting Started
@@ -29,6 +31,7 @@ Kaliyapa Farmstead is a premier agricultural establishment redefining livestock 
 
 - Node.js 18+
 - npm or pnpm
+- Turso database (create at [turso.tech](https://turso.tech))
 
 ### Installation
 
@@ -39,14 +42,10 @@ npm install
 # Copy environment template
 cp .env.example .env.local
 
-# Configure Firebase in .env.local
-# Add your Firebase configuration:
-# VITE_FIREBASE_API_KEY=your_api_key
-# VITE_FIREBASE_AUTH_DOMAIN=your_domain
-# VITE_FIREBASE_PROJECT_ID=your_project
-# VITE_FIREBASE_STORAGE_BUCKET=your_bucket
-# VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-# VITE_FIREBASE_APP_ID=your_app_id
+# Configure Turso and JWT in .env.local:
+# TURSO_DATABASE_URL=libsql://your-database.turso.io
+# TURSO_AUTH_TOKEN=your_turso_auth_token
+# JWT_SECRET=your_secure_random_secret
 
 # Start development server
 npm run dev
@@ -61,58 +60,78 @@ npm run build
 npm run preview
 ```
 
-## Admin Setup
+## Database Setup
 
-Admin access is managed through Firebase Firestore. To grant admin privileges to a user:
+### 1. Create a Turso Database
 
-### Step 1: Get the User's UID
+```bash
+# Install Turso CLI
+curl -sSf https://get.tur.so/install.sh | bash
 
-1. Have the user sign in through the application's authentication system
-2. Go to Firebase Console → Authentication → Users tab
-3. Find the user and copy their UID (User ID)
+# Login and create database
+turso auth login
+turso db create kaliyapa-farmstead
 
-### Step 2: Add User to Admins Collection
+# Get connection details
+turso db show kaliyapa-farmstead --url
+turso db tokens create kaliyapa-farmstead
+```
 
-1. Go to Firebase Console → Firestore Database
-2. Navigate to the `admins` collection
-3. Create a new document with the user's UID as the document ID
-4. No additional fields are required - the document ID alone grants admin access
+### 2. Seed the Database
 
-### Security Note
+The database tables are auto-created on first API call. To create an initial admin user:
 
-Admin access is now managed entirely through the Firestore `admins` collection. This approach:
-- Eliminates hardcoded admin emails from the codebase
-- Allows adding/removing admins without code changes
-- Supports multiple admins
-- Keeps sensitive information out of public repositories
+```bash
+# Use the Turso shell to insert an admin
+turso db shell kaliyapa-farmstead
 
-### Firestore Rules
+# Generate a bcrypt hash of your password first, then:
+INSERT INTO admins (id, email, password_hash) VALUES ('admin-uuid', 'admin@example.com', '$2b$10$hashed_password');
+```
 
-The `isAdmin()` function in `firestore.rules` checks:
-- User is signed in
-- Email is verified
-- User's UID exists in the `admins` collection
+You can generate a bcrypt hash using Node.js:
+```bash
+node -e "const bcrypt = require('bcryptjs'); console.log(bcrypt.hashSync('your_password', 10));"
+```
+
+### 3. Deploy to Vercel
+
+Set the environment variables in your Vercel project settings:
+- `TURSO_DATABASE_URL`
+- `TURSO_AUTH_TOKEN`
+- `JWT_SECRET`
+
+## Admin Access
+
+- URL: `/admin/login`
+- Authentication via email/password with JWT tokens
+- Admin users are stored in the `admins` table in Turso
 
 ## Project Structure
 
 ```
 kaliyapa-farmstead/
+├── api/                    # Vercel serverless functions
+│   ├── lib/
+│   │   └── db.ts           # Turso database client
+│   ├── auth.ts             # Authentication endpoint
+│   ├── services.ts         # Services CRUD endpoint
+│   └── inquiries.ts        # Inquiries CRUD endpoint
 ├── src/
-│   ├── components/       # Reusable UI components
-│   ├── pages/           # Page components
-│   │   ├── admin/        # Admin dashboard pages
+│   ├── components/         # Reusable UI components
+│   ├── pages/              # Page components
+│   │   ├── admin/           # Admin dashboard pages
 │   │   ├── About.tsx
 │   │   ├── Contact.tsx
 │   │   ├── Gallery.tsx
 │   │   ├── Home.tsx
 │   │   └── Services.tsx
-│   ├── context/          # React contexts
-│   ├── lib/              # Utilities (Firebase config)
-│   ├── constants.ts      # Site constants
-│   └── index.css          # Global styles
+│   ├── context/            # React contexts
+│   ├── lib/                # Utilities
+│   │   └── api.ts          # Frontend API client
+│   ├── constants.ts        # Site constants
+│   └── index.css           # Global styles
 ├── public/
-├── firebase-blueprint.json
-├── firestore.rules
 └── package.json
 ```
 
@@ -122,16 +141,18 @@ kaliyapa-farmstead/
 - Bento grid layout for service showcase
 - WhatsApp integration for direct contact
 - Admin dashboard for managing services and inquiries
-- Firebase backend for data persistence
+- Turso database for data persistence
+- JWT-based authentication
 - SEO optimized with meta tags
 - Accessibility features (skip links, ARIA labels)
+- Error boundary for graceful error handling
 
 ## Contact
 
 **Kaliyapa Farmstead**
 - Phone: +265 993 02 70 68
 - Location: Lifidzi, Salima, Malawi (15km from Kamuzu Road)
-- Email: info@kaliyapafarmstead.com
+- Email: lysonkaliyapa@gmail.com
 
 ---
 

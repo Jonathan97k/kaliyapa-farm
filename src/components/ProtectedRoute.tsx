@@ -2,7 +2,7 @@ import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-export function ProtectedRoute({ children, requireAdmin = false }: { children: React.ReactNode, requireAdmin?: boolean }) {
+export function ProtectedRoute({ children, requireAdmin = false }: { children: React.ReactNode; requireAdmin?: boolean }) {
   const { user, isAdmin, loading } = useAuth();
   const location = useLocation();
 
@@ -24,7 +24,7 @@ export function ProtectedRoute({ children, requireAdmin = false }: { children: R
         <div className="space-y-6">
           <h1 className="text-4xl font-serif font-bold text-primary">Access Restricted.</h1>
           <p className="text-primary/60">This area requires administrative clearance.</p>
-          <button 
+          <button
             onClick={() => window.history.back()}
             className="btn-premium"
           >

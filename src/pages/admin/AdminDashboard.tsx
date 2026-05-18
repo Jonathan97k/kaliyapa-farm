@@ -1,13 +1,47 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Briefcase, Image as ImageIcon, MessageSquare, Inbox, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { fetchServices, fetchInquiries, fetchGalleryImages, fetchTestimonials, fetchSubscribers } from '../../lib/api';
 
 export default function AdminDashboard() {
+  const [serviceCount, setServiceCount] = useState(0);
+  const [galleryCount, setGalleryCount] = useState(0);
+  const [testimonialCount, setTestimonialCount] = useState(0);
+  const [inquiryCount, setInquiryCount] = useState(0);
+  const [subscriberCount, setSubscriberCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadStats() {
+      try {
+        const [services, inquiries, gallery, testimonials, subscribers] = await Promise.all([
+          fetchServices(),
+          fetchInquiries(),
+          fetchGalleryImages(),
+          fetchTestimonials(),
+          fetchSubscribers(),
+        ]);
+        setServiceCount(services.length);
+        setInquiryCount(inquiries.length);
+        setGalleryCount(gallery.length);
+        setTestimonialCount(testimonials.length);
+        setSubscriberCount(subscribers.length);
+      } catch (error) {
+        console.error('Failed to load dashboard stats:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadStats();
+  }, []);
+
   const stats = [
-    { name: 'Active Services', value: '3', icon: Briefcase, color: 'text-blue-500' },
-    { name: 'Gallery Assets', value: '12', icon: ImageIcon, color: 'text-purple-500' },
-    { name: 'Testimonials', value: '8', icon: MessageSquare, color: 'text-amber-500' },
-    { name: 'New Inquiries', value: '4', icon: Inbox, color: 'text-secondary' },
+    { name: 'Active Services', value: loading ? '...' : String(serviceCount), icon: Briefcase, color: 'text-blue-500' },
+    { name: 'Gallery Assets', value: loading ? '...' : String(galleryCount), icon: ImageIcon, color: 'text-purple-500' },
+    { name: 'Testimonials', value: loading ? '...' : String(testimonialCount), icon: MessageSquare, color: 'text-amber-500' },
+    { name: 'Subscribers', value: loading ? '...' : String(subscriberCount), icon: Inbox, color: 'text-green-500' },
+    { name: 'New Inquiries', value: loading ? '...' : String(inquiryCount), icon: Inbox, color: 'text-secondary' },
   ];
 
   return (
@@ -45,12 +79,12 @@ export default function AdminDashboard() {
           </div>
           <div className="space-y-6">
             <div className="flex justify-between items-center text-sm">
-              <span className="text-primary/60">Cloud Firestore Status</span>
+              <span className="text-primary/60">Turso Database Status</span>
               <span className="text-green-500 font-bold uppercase tracking-widest text-[10px]">Operational</span>
             </div>
             <div className="flex justify-between items-center text-sm">
-              <span className="text-primary/60">Security Rules</span>
-              <span className="text-green-500 font-bold uppercase tracking-widest text-[10px]">Hardened</span>
+              <span className="text-primary/60">API Routes</span>
+              <span className="text-green-500 font-bold uppercase tracking-widest text-[10px]">Active</span>
             </div>
             <div className="flex justify-between items-center text-sm">
               <span className="text-primary/60">Admin Synchronization</span>
@@ -64,8 +98,8 @@ export default function AdminDashboard() {
             <Inbox size={40} className="text-secondary" />
           </div>
           <div className="space-y-2">
-            <h3 className="text-2xl font-serif font-bold tracking-tighter">Awaiting Response</h3>
-            <p className="text-white/40 text-sm">You have 4 unread professional inquiries.</p>
+            <h3 className="text-2xl font-serif font-bold tracking-tighter text-green-400">Awaiting Response</h3>
+            <p className="text-green-300 text-sm">You have {inquiryCount} unread professional inquiries.</p>
           </div>
           <Link to="/admin/inquiries" className="btn-premium w-full text-center">Open Professional Inbox</Link>
         </div>

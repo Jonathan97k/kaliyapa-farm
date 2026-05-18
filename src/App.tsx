@@ -19,6 +19,9 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminServices from './pages/admin/AdminServices';
 import AdminInquiries from './pages/admin/AdminInquiries';
+import AdminGallery from './pages/admin/AdminGallery';
+import AdminTestimonials from './pages/admin/AdminTestimonials';
+import AdminSubscribers from './pages/admin/AdminSubscribers';
 
 export default function App() {
   return (
@@ -43,14 +46,13 @@ export default function App() {
           }>
             <Route index element={<AdminDashboard />} />
             <Route path="services" element={<AdminServices />} />
+            <Route path="gallery" element={<AdminGallery />} />
+            <Route path="testimonials" element={<AdminTestimonials />} />
             <Route path="inquiries" element={<AdminInquiries />} />
-            {/* Gallery and Testimonials could be added here as well */}
-            <Route path="gallery" element={<div className="p-10 text-primary font-serif">Gallery Management (Coming Soon)</div>} />
-            <Route path="testimonials" element={<div className="p-10 text-primary font-serif">Testimonials Management (Coming Soon)</div>} />
+            <Route path="subscribers" element={<AdminSubscribers />} />
           </Route>
         </Routes>
       </Router>
     </AuthProvider>
   );
 }
-

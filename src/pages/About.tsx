@@ -2,10 +2,17 @@ import { motion } from 'motion/react';
 import { Quote, Leaf, Target, Eye } from 'lucide-react';
 import { FARM_NAME, MOTTO, ABOUT_IMAGES } from '../constants';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 
 export default function About() {
   return (
     <div className="bg-cream">
+      <SEO
+        title="About Us - Our Heritage & Vision"
+        description="Learn about Kaliyapa Farmstead's heritage, philosophy, and mission. Founded in 2008 in Salima, Malawi, we strive for agricultural excellence through sustainable livestock farming."
+        keywords="about Kaliyapa Farmstead, farming history Malawi, sustainable agriculture, livestock farming philosophy"
+        canonicalUrl="https://kaliyapafarmstead.com/about"
+      />
       {/* Editorial Header */}
       <section className="pt-40 md:pt-48 pb-16 md:pb-24 px-4 bg-primary text-white overflow-hidden relative">
         <div className="grain-overlay opacity-10" />
@@ -47,22 +54,22 @@ export default function About() {
           >
             The Heritage <br/> of <span className="italic text-secondary">Kaliyapa.</span>
           </motion.h1>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-end">
-            <motion.p 
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-20 items-end">
+            <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
-              className="text-2xl font-light text-white/50 italic font-serif max-w-xl"
+              className="text-lg sm:text-xl md:text-2xl font-light text-white/50 italic font-serif max-w-xl"
             >
               "Rooted in the fertile soils of Salima, we've spent decades perfecting the harmony between biological integrity and commercial scalability."
             </motion.p>
-            <div className="flex gap-12 md:justify-end">
+            <div className="flex gap-6 sm:gap-12 md:justify-end">
                <div className="text-center">
-                  <div className="text-4xl font-serif font-bold text-secondary">2008</div>
+                  <div className="text-3xl sm:text-4xl font-serif font-bold text-secondary">2008</div>
                   <div className="text-[10px] font-bold tracking-widest uppercase opacity-40">Founded</div>
                </div>
                <div className="text-center">
-                  <div className="text-4xl font-serif font-bold text-secondary">5000+</div>
+                  <div className="text-3xl sm:text-4xl font-serif font-bold text-secondary">5000+</div>
                   <div className="text-[10px] font-bold tracking-widest uppercase opacity-40">Annual Yield</div>
                </div>
             </div>

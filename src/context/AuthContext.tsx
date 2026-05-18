@@ -1,40 +1,45 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { User, onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
-import { auth, googleProvider } from '../lib/firebase';
+import { login as apiLogin, logout as apiLogout, isAuthenticated, getAdminEmail } from '../lib/api';
 
 interface AuthContextType {
-  user: User | null;
+  user: { email: string } | null;
   isAdmin: boolean;
   loading: boolean;
-  login: () => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const ADMIN_EMAILS = ['jkaphiri@tingathe.org'];
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<{ email: string } | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setIsAdmin(user ? (ADMIN_EMAILS.includes(user.email || '') && user.emailVerified) : false);
+    const checkAuth = () => {
+      const email = getAdminEmail();
+      const authenticated = isAuthenticated();
+      if (email && authenticated) {
+        setUser({ email: decodeURIComponent(email) });
+        setIsAdmin(true);
+      }
       setLoading(false);
-    });
+    };
 
-    return () => unsubscribe();
+    checkAuth();
   }, []);
 
-  const login = async () => {
-    await signInWithPopup(auth, googleProvider);
+  const login = async (email: string, password: string) => {
+    const response = await apiLogin(email, password);
+    setUser({ email: response.email });
+    setIsAdmin(true);
   };
 
   const logout = async () => {
-    await signOut(auth);
+    await apiLogout();
+    setUser(null);
+    setIsAdmin(false);
   };
 
   return (
