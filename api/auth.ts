@@ -3,10 +3,6 @@ import { rateLimit } from './lib/rateLimit';
 import { validateLoginInput } from './lib/validation';
 import { createToken } from './lib/jwt';
 
-export const config = {
-  runtime: 'edge',
-};
-
 export default async function handler(request: Request) {
   if (request.method !== 'POST') {
     return new Response(

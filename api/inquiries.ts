@@ -3,10 +3,6 @@ import { verifyToken } from './lib/jwt';
 import { validateInquiryInput } from './lib/validation';
 import { rateLimit } from './lib/rateLimit';
 
-export const config = {
-  runtime: 'edge',
-};
-
 async function getAdminFromRequest(request: Request): Promise<{ id: string; email: string } | null> {
   const cookieHeader = request.headers.get('cookie') || '';
   const authHeader = request.headers.get('authorization');

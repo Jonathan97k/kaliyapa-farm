@@ -2,10 +2,6 @@ import { turso, initializeDb } from './lib/db';
 import { verifyToken } from './lib/jwt';
 import { validateTestimonialInput } from './lib/validation';
 
-export const config = {
-  runtime: 'edge',
-};
-
 async function getAdminFromRequest(request: Request): Promise<{ id: string; email: string } | null> {
   const cookieHeader = request.headers.get('cookie') || '';
   const authHeader = request.headers.get('authorization');

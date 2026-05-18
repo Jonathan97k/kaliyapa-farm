@@ -30,8 +30,8 @@ export default function Navbar() {
       <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300 ${isScrolled ? 'mt-3' : 'mt-0'}`}>
         <div className="relative flex items-center justify-end min-h-[56px] px-6">
           {/* Logo - absolutely positioned, outside the glass bar */}
-          <Link to="/" className={`absolute left-6 top-4 z-10 transition-all duration-500 ${isScrolled ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-            <div className="h-36 w-36 rounded-full overflow-hidden">
+          <Link to="/" className={`absolute left-4 top-1 lg:left-6 lg:top-4 z-10 transition-all duration-500 ${isScrolled ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+            <div className="h-20 w-20 lg:h-36 lg:w-36 rounded-full overflow-hidden">
               <img src="/logo.png" alt="Kaliyapa Farmstead Logo" className="h-full w-full object-cover" style={{ transform: 'scale(1.15)' }} />
             </div>
           </Link>
