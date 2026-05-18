@@ -1,31 +1,51 @@
-import { createClient, type Client } from "@libsql/client/http";
+import type { Client } from "@libsql/client/http";
 
-let tursoClient: Client | null = null;
-let initError: Error | null = null;
+let _client: Client | null = null;
+let _clientPromise: Promise<Client> | null = null;
+let _initError: Error | null = null;
 
-function getTurso(): Client {
-  if (initError) throw initError;
-  if (tursoClient) return tursoClient;
+async function getClient(): Promise<Client> {
+  if (_initError) throw _initError;
+  if (_client) return _client;
+  if (_clientPromise) return _clientPromise;
+
   const url = process.env.TURSO_DATABASE_URL;
   const authToken = process.env.TURSO_AUTH_TOKEN;
   if (!url || !authToken) {
-    initError = new Error('Missing TURSO_DATABASE_URL or TURSO_AUTH_TOKEN environment variables');
-    throw initError;
+    _initError = new Error('Missing TURSO_DATABASE_URL or TURSO_AUTH_TOKEN environment variables');
+    throw _initError;
   }
-  tursoClient = createClient({ url, authToken });
-  return tursoClient;
+
+  _clientPromise = (async () => {
+    try {
+      const { createClient } = await import("@libsql/client/http");
+      const client = createClient({ url, authToken });
+      _client = client;
+      return client;
+    } catch (e) {
+      _initError = e as Error;
+      throw e;
+    }
+  })();
+
+  return _clientPromise;
 }
 
 export const turso = new Proxy({} as Client, {
-  get(_, prop) {
-    const client = getTurso();
-    const value = (client as Record<string | symbol, unknown>)[prop];
-    return typeof value === 'function' ? value.bind(client) : value;
+  get(_target, prop) {
+    return async (...args: unknown[]) => {
+      const client = await getClient();
+      const value = (client as Record<string | symbol, unknown>)[prop];
+      if (typeof value === 'function') {
+        return value.apply(client, args);
+      }
+      return value;
+    };
   },
 });
 
 export async function initializeDb(): Promise<void> {
-  const db = getTurso();
+  const db = await getClient();
   await db.execute(`
     CREATE TABLE IF NOT EXISTS admins (
       id TEXT PRIMARY KEY,
