@@ -28,7 +28,16 @@ async function getAdminFromRequest(request: Request): Promise<{ id: string; emai
 }
 
 export default async function handler(request: Request) {
-  await initializeDb();
+  try {
+    await initializeDb();
+  } catch (error) {
+    console.error('Database initialization error:', error);
+    return new Response(JSON.stringify({ error: 'Service temporarily unavailable' }), {
+      status: 503,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
   const url = new URL(request.url);
 
   if (request.method === 'GET') {

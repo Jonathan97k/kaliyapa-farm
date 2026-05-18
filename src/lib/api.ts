@@ -333,6 +333,9 @@ export async function subscribe(email: string): Promise<{ id: string }> {
       const data = JSON.parse(text);
       throw new Error(data.error || 'Failed to subscribe');
     } catch {
+      if (response.status >= 500) {
+        throw new Error('Service temporarily unavailable. Please try again later.');
+      }
       throw new Error(text || 'Failed to subscribe');
     }
   }

@@ -43,5 +43,3 @@ export function cleanupRateLimitStore(): void {
     }
   }
 }
-
-setInterval(cleanupRateLimitStore, 60 * 60 * 1000);

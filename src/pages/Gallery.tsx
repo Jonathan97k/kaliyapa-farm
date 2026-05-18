@@ -12,6 +12,7 @@ function isVideoUrl(url: string) {
 export default function Gallery() {
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState('All');
   const [lightbox, setLightbox] = useState<{ url: string; title: string; category: string } | null>(null);
 
@@ -22,6 +23,7 @@ export default function Gallery() {
         setImages(data);
       } catch (error) {
         console.error('Failed to load gallery:', error);
+        setError('Unable to load gallery. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -155,7 +157,12 @@ export default function Gallery() {
           </AnimatePresence>
         </motion.div>
 
-        {filteredImages.length === 0 && (
+        {error && (
+          <div className="text-center py-20 text-primary/40">
+            <p className="text-lg font-serif italic">{error}</p>
+          </div>
+        )}
+        {!error && filteredImages.length === 0 && (
           <div className="text-center py-20 text-primary/40">
             <p className="text-lg font-serif italic">No images in this category yet.</p>
           </div>

@@ -28,17 +28,27 @@ async function getAdminFromRequest(request: Request): Promise<{ id: string; emai
 }
 
 export default async function handler(request: Request) {
-  await initializeDb();
+  try {
+    await initializeDb();
+  } catch (error) {
+    console.error('Database initialization error:', error);
+    return new Response(JSON.stringify({ error: 'Service temporarily unavailable' }), {
+      status: 503,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
   const url = new URL(request.url);
 
   if (request.method === 'GET') {
     try {
-      const result = await turso.execute('SELECT * FROM gallery_images ORDER BY created_at DESC');
+      const result = await turso.execute('SELECT * FROM gallery_images ORDER BY created_at DESC LIMIT 50');
       return new Response(JSON.stringify(result.rows), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
       });
-    } catch {
+    } catch (error) {
+      console.error('Gallery GET error:', error);
       return new Response(JSON.stringify({ error: 'Failed to fetch gallery images' }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' },
@@ -70,6 +80,7 @@ export default async function handler(request: Request) {
         headers: { 'Content-Type': 'application/json' },
       });
     } catch (error) {
+      console.error('Gallery POST error:', error);
       return new Response(JSON.stringify({ error: (error as Error).message || 'Failed to add image' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
@@ -100,6 +111,7 @@ export default async function handler(request: Request) {
         headers: { 'Content-Type': 'application/json' },
       });
     } catch (error) {
+      console.error('Gallery PUT error:', error);
       return new Response(JSON.stringify({ error: (error as Error).message || 'Failed to update image' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
@@ -126,7 +138,8 @@ export default async function handler(request: Request) {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
       });
-    } catch {
+    } catch (error) {
+      console.error('Gallery DELETE error:', error);
       return new Response(JSON.stringify({ error: 'Failed to delete image' }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' },

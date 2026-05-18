@@ -19,9 +19,9 @@ export default function Footer() {
       setStatus('success');
       setMessage('Subscribed successfully!');
       setEmail('');
-    } catch (err) {
+    } catch {
       setStatus('error');
-      setMessage(err instanceof Error ? err.message : 'Subscription failed');
+      setMessage('Could not subscribe. Please try again later or contact us directly.');
     }
   };
 
