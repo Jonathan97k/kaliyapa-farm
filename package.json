@@ -2,9 +2,6 @@
   "name": "kaliyapa-farmstead",
   "private": true,
   "version": "1.0.0",
-  "engines": {
-    "node": "20.x"
-  },
   "description": "Premium livestock farming website for Kaliyapa Farmstead - goat, poultry, and piggery in Salima, Malawi",
   "type": "module",
   "scripts": {
@@ -17,7 +14,6 @@
     "seed-admin": "node seed-admin.cjs"
   },
   "dependencies": {
-    "@libsql/client": "^0.14.0",
     "@tailwindcss/vite": "^4.1.14",
     "@vitejs/plugin-react": "^5.0.4",
     "bcryptjs": "^2.4.3",
