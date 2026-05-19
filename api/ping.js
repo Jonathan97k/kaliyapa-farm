@@ -1,6 +1,3 @@
-export default async function handler(request) {
-  return new Response(JSON.stringify({ pong: true }), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' },
-  });
-}
+module.exports = (req, res) => {
+  res.status(200).json({ pong: true });
+};
