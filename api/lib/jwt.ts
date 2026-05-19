@@ -1,5 +1,3 @@
-import { SignJWT, jwtVerify, type JWTPayload } from 'jose';
-
 let secretKey: Uint8Array | null = null;
 
 export function getSecret(): Uint8Array {
@@ -16,6 +14,7 @@ export function getSecret(): Uint8Array {
 
 export async function createToken(payload: { id: string; email: string }): Promise<string> {
   const secret = getSecret();
+  const { SignJWT } = await import('jose');
   return new SignJWT({ id: payload.id, email: payload.email })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
@@ -23,10 +22,11 @@ export async function createToken(payload: { id: string; email: string }): Promi
     .sign(secret);
 }
 
-export async function verifyToken(token: string): Promise<JWTPayload> {
+export async function verifyToken(token: string): Promise<{ id: string; email: string; exp?: number; iat?: number }> {
   const secret = getSecret();
+  const { jwtVerify } = await import('jose');
   const { payload } = await jwtVerify(token, secret);
-  return payload;
+  return payload as { id: string; email: string; exp?: number; iat?: number };
 }
 
 export function getAdminEmail(): string | null {
