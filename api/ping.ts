@@ -1,7 +1,6 @@
-export default function handler() {
-  return {
-    statusCode: 200,
+export default async function handler() {
+  return new Response(JSON.stringify({ pong: true }), {
+    status: 200,
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ pong: true }),
-  };
+  });
 }
