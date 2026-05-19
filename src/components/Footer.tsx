@@ -1,29 +1,9 @@
-import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { Leaf, CheckCircle2, Loader2 } from 'lucide-react';
+import { Leaf } from 'lucide-react';
 import { FARM_NAME, CONTACT_PHONE, LOCATION } from '../constants';
-import { subscribe } from '../lib/api';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [message, setMessage] = useState('');
-
-  const handleSubscribe = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!email.trim()) return;
-    setStatus('loading');
-    try {
-      await subscribe(email.trim());
-      setStatus('success');
-      setMessage('Subscribed successfully!');
-      setEmail('');
-    } catch {
-      setStatus('error');
-      setMessage('Could not subscribe. Please try again later or contact us directly.');
-    }
-  };
 
   return (
     <footer className="bg-charcoal text-white pt-32 pb-20 overflow-hidden relative">
@@ -74,39 +54,33 @@ export default function Footer() {
           {/* Engagement */}
           <div className="lg:col-span-3 space-y-6 lg:space-y-8">
             <h4 className="text-[10px] font-bold tracking-[0.4em] uppercase text-secondary">Engagement</h4>
-            <div className="space-y-6 lg:space-y-8">
-              <p className="text-white/40 text-sm font-light italic">Enter your professional channel for exclusive livestock updates.</p>
-              <form onSubmit={handleSubscribe} className="relative group">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  placeholder="Professional Email"
-                  required
-                  className="w-full bg-white/5 border border-white/10 rounded-full px-6 lg:px-8 py-3 lg:py-4 text-sm outline-none focus:border-secondary transition-all pr-24"
-                  disabled={status === 'loading'}
-                />
-                <button
-                  type="submit"
-                  disabled={status === 'loading'}
-                  className="absolute right-1.5 lg:right-2 top-1.5 lg:top-2 bottom-1.5 lg:bottom-2 bg-secondary text-primary px-4 lg:px-6 rounded-full text-[10px] font-bold tracking-widest uppercase hover:bg-white transition-all transform active:scale-95 min-h-[36px] lg:min-h-auto disabled:opacity-50 flex items-center gap-1"
-                >
-                  {status === 'loading' ? (
-                    <Loader2 size={14} className="animate-spin" />
-                  ) : (
-                    'Sign'
-                  )}
-                </button>
-              </form>
-              {status === 'success' && (
-                <div className="flex items-center gap-2 text-green-400 text-xs">
-                  <CheckCircle2 size={14} />
-                  {message}
-                </div>
-              )}
-              {status === 'error' && (
-                <div className="text-red-400 text-xs">{message}</div>
-              )}
+            <div style={{ textAlign: 'center', padding: '40px 20px', background: '#1B5E20', borderRadius: '8px' }}>
+              <h2 style={{ color: '#FFD700', fontSize: '1.8rem', marginBottom: '15px' }}>
+                Join Our Farm Community
+              </h2>
+              <p style={{ color: 'white', marginBottom: '25px', fontSize: '1rem' }}>
+                Get exclusive livestock updates, farm news and special offers directly on WhatsApp
+              </p>
+              <a
+                href="https://wa.me/265994619414?text=Hello%20Kaliyapa%20Farm!%20I%20would%20like%20to%20receive%20updates%20about%20your%20livestock%20and%20farm%20products."
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  background: '#25D366',
+                  color: 'white',
+                  padding: '15px 35px',
+                  borderRadius: '8px',
+                  textDecoration: 'none',
+                  fontWeight: 700,
+                  fontSize: '1rem',
+                  display: 'inline-block',
+                }}
+              >
+                💬 Join on WhatsApp
+              </a>
+              <p style={{ color: '#ccc', marginTop: '15px', fontSize: '0.85rem' }}>
+                Tap to chat with us instantly
+              </p>
             </div>
           </div>
         </div>
