@@ -2,7 +2,7 @@ import { ArrowRight, CheckCircle2, Quote, Loader2, ChevronLeft, ChevronRight } f
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import Hero from '../components/Hero';
-import { FARM_NAME, CONTACT_PHONE } from '../constants';
+import { FARM_NAME, CONTACT_PHONE, SERVICES as FALLBACK_SERVICES, TESTIMONIALS as FALLBACK_TESTIMONIALS } from '../constants';
 import { useState, useEffect } from 'react';
 import { fetchServices, fetchTestimonials, type Service, type Testimonial } from '../lib/api';
 import SEO from '../components/SEO';
@@ -54,19 +54,20 @@ function ServiceImageGallery({ service }: { service: Service }) {
 }
 
 export default function Home() {
-  const [services, setServices] = useState<Service[]>([]);
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-  const [loadingServices, setLoadingServices] = useState(true);
+  const [services, setServices] = useState<Service[]>(FALLBACK_SERVICES as Service[]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(FALLBACK_TESTIMONIALS as Testimonial[]);
+  const [loadingServices, setLoadingServices] = useState(false);
 
   useEffect(() => {
     async function loadData() {
+      setLoadingServices(true);
       try {
         const [servicesData, testimonialsData] = await Promise.all([
           fetchServices(),
           fetchTestimonials(),
         ]);
-        setServices(servicesData.slice(0, 3));
-        setTestimonials(testimonialsData);
+        if (servicesData.length > 0) setServices(servicesData.slice(0, 3));
+        if (testimonialsData.length > 0) setTestimonials(testimonialsData);
       } catch (error) {
         console.error('Error fetching data for home:', error);
       } finally {

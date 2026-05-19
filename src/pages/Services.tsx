@@ -3,6 +3,7 @@ import { ArrowRight, MessageSquare, Quote, Loader2, ChevronLeft, ChevronRight, X
 import { Link } from 'react-router-dom';
 
 import { useState, useEffect } from 'react';
+import { SERVICES as FALLBACK_SERVICES } from '../constants';
 import { fetchServices, type Service } from '../lib/api';
 import SEO from '../components/SEO';
 
@@ -180,14 +181,15 @@ function ServiceGallery({ service, index }: { service: Service; index: number })
 }
 
 export default function Services() {
-  const [services, setServices] = useState<Service[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [services, setServices] = useState<Service[]>(FALLBACK_SERVICES as Service[]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function loadServices() {
+      setLoading(true);
       try {
         const data = await fetchServices();
-        setServices(data);
+        if (data.length > 0) setServices(data);
       } catch (error) {
         console.error('Error fetching services:', error);
       } finally {

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { GALLERY_IMAGES as FALLBACK_GALLERY_IMAGES } from '../constants';
 import { fetchGalleryImages, type GalleryImage } from '../lib/api';
 import { Link } from 'react-router-dom';
 import { X, Camera, Loader2, Video } from 'lucide-react';
@@ -10,20 +11,19 @@ function isVideoUrl(url: string) {
 }
 
 export default function Gallery() {
-  const [images, setImages] = useState<GalleryImage[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [images, setImages] = useState<GalleryImage[]>(FALLBACK_GALLERY_IMAGES as GalleryImage[]);
+  const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState('All');
   const [lightbox, setLightbox] = useState<{ url: string; title: string; category: string } | null>(null);
 
   useEffect(() => {
     async function loadImages() {
+      setLoading(true);
       try {
         const data = await fetchGalleryImages();
-        setImages(data);
+        if (data.length > 0) setImages(data);
       } catch (error) {
         console.error('Failed to load gallery:', error);
-        setError('Unable to load gallery. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -157,12 +157,7 @@ export default function Gallery() {
           </AnimatePresence>
         </motion.div>
 
-        {error && (
-          <div className="text-center py-20 text-primary/40">
-            <p className="text-lg font-serif italic">{error}</p>
-          </div>
-        )}
-        {!error && filteredImages.length === 0 && (
+        {filteredImages.length === 0 && (
           <div className="text-center py-20 text-primary/40">
             <p className="text-lg font-serif italic">No images in this category yet.</p>
           </div>
