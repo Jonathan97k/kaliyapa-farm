@@ -3,7 +3,6 @@
   "private": true,
   "version": "1.0.0",
   "description": "Premium livestock farming website for Kaliyapa Farmstead - goat, poultry, and piggery in Salima, Malawi",
-  "type": "module",
   "scripts": {
     "dev": "npx concurrently \"node server.cjs\" \"vite --port=3000 --host=0.0.0.0\"",
     "server": "node server.cjs",
